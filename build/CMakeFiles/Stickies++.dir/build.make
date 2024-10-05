@@ -73,29 +73,29 @@ CMakeFiles/Stickies++.dir/src/main.cpp.o: CMakeFiles/Stickies++.dir/flags.make
 CMakeFiles/Stickies++.dir/src/main.cpp.o: /Users/vladyslav/Documents/code/cpp/Stickies++/src/main.cpp
 CMakeFiles/Stickies++.dir/src/main.cpp.o: CMakeFiles/Stickies++.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/vladyslav/Documents/code/cpp/Stickies++/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Stickies++.dir/src/main.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Stickies++.dir/src/main.cpp.o -MF CMakeFiles/Stickies++.dir/src/main.cpp.o.d -o CMakeFiles/Stickies++.dir/src/main.cpp.o -c /Users/vladyslav/Documents/code/cpp/Stickies++/src/main.cpp
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Stickies++.dir/src/main.cpp.o -MF CMakeFiles/Stickies++.dir/src/main.cpp.o.d -o CMakeFiles/Stickies++.dir/src/main.cpp.o -c /Users/vladyslav/Documents/code/cpp/Stickies++/src/main.cpp
 
 CMakeFiles/Stickies++.dir/src/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Stickies++.dir/src/main.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/vladyslav/Documents/code/cpp/Stickies++/src/main.cpp > CMakeFiles/Stickies++.dir/src/main.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/vladyslav/Documents/code/cpp/Stickies++/src/main.cpp > CMakeFiles/Stickies++.dir/src/main.cpp.i
 
 CMakeFiles/Stickies++.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Stickies++.dir/src/main.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/vladyslav/Documents/code/cpp/Stickies++/src/main.cpp -o CMakeFiles/Stickies++.dir/src/main.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/vladyslav/Documents/code/cpp/Stickies++/src/main.cpp -o CMakeFiles/Stickies++.dir/src/main.cpp.s
 
 CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.o: CMakeFiles/Stickies++.dir/flags.make
 CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.o: /Users/vladyslav/Documents/code/cpp/Stickies++/src/NoteWindow.cpp
 CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.o: CMakeFiles/Stickies++.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/vladyslav/Documents/code/cpp/Stickies++/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.o -MF CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.o.d -o CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.o -c /Users/vladyslav/Documents/code/cpp/Stickies++/src/NoteWindow.cpp
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.o -MF CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.o.d -o CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.o -c /Users/vladyslav/Documents/code/cpp/Stickies++/src/NoteWindow.cpp
 
 CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/vladyslav/Documents/code/cpp/Stickies++/src/NoteWindow.cpp > CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.i
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/vladyslav/Documents/code/cpp/Stickies++/src/NoteWindow.cpp > CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.i
 
 CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/vladyslav/Documents/code/cpp/Stickies++/src/NoteWindow.cpp -o CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.s
+	/usr/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/vladyslav/Documents/code/cpp/Stickies++/src/NoteWindow.cpp -o CMakeFiles/Stickies++.dir/src/NoteWindow.cpp.s
 
 # Object files for target Stickies++
 Stickies_______OBJECTS = \

@@ -1,5 +1,92 @@
 #include "../include/NoteWindow.h"
 
+WindowManager* WindowManager::instance = nullptr;
+
+int NoteWindow::count = 0;
+
+WindowManager* WindowManager::get_instance(){
+    if(instance == nullptr){
+        instance = new WindowManager;
+    }
+    return instance;
+}
+
+WindowManager::WindowManager (){};
+
+void NoteWindow::hide() {
+    Fl_Double_Window::hide();
+    WindowManager::get_instance()->removeWindow(this);
+}
+
+void WindowManager::add_window(std::unique_ptr<NoteWindow> window){
+    win_vec.push_back(std::move(window));
+}
+
+void WindowManager::removeWindow(NoteWindow* window) {
+    win_vec.erase(std::remove_if(win_vec.begin(), win_vec.end(),
+        [window](const auto& ptr) { return ptr.get() == window; }),
+        win_vec.end());
+}
+
+void write_file(const std::string& content, const std::string& path) {
+    std::ofstream file(path);
+    if (!file.is_open()) {
+        std::cerr << "Error: Unable to open file for writing: " << path << std::endl;
+        return;
+    }
+    
+    file << content;
+    file.close();
+}
+
+void NoteColor::serialize(std::ofstream& out) const {
+    out.write(reinterpret_cast<const char*>(&titlebar), sizeof(Fl_Color));
+    out.write(reinterpret_cast<const char*>(&bg), sizeof(Fl_Color));
+    out.write(reinterpret_cast<const char*>(&buttonDarker), sizeof(Fl_Color));
+    out.write(reinterpret_cast<const char*>(&buttonLighter), sizeof(Fl_Color));
+}
+
+void NoteColor::deserialize(std::ifstream& in) {
+    in.read(reinterpret_cast<char*>(&titlebar), sizeof(Fl_Color));
+    in.read(reinterpret_cast<char*>(&bg), sizeof(Fl_Color));
+    in.read(reinterpret_cast<char*>(&buttonDarker), sizeof(Fl_Color));
+    in.read(reinterpret_cast<char*>(&buttonLighter), sizeof(Fl_Color));
+}
+
+void NoteMeta::serialize(std::ofstream& out) const {
+    out.write(reinterpret_cast<const char*>(&pos_y), sizeof(int));
+    out.write(reinterpret_cast<const char*>(&pos_x), sizeof(int));
+    notecolor.serialize(out);
+}
+
+void NoteMeta::deserialize(std::ifstream& in) {
+    in.read(reinterpret_cast<char*>(&pos_y), sizeof(int));
+    in.read(reinterpret_cast<char*>(&pos_x), sizeof(int));
+    notecolor.deserialize(in);
+}
+
+void NoteMeta::writeToFile(const std::string& filename) const {
+    std::ofstream out(filename, std::ios::binary);
+    if (out.is_open()) {
+        serialize(out);
+        out.close();
+    }
+}
+
+NoteMeta NoteMeta::readFromFile(const std::string& filename) {
+    NoteMeta meta;
+    std::ifstream in(filename, std::ios::binary);
+    if (in.is_open()) {
+        meta.deserialize(in);
+        in.close();
+    }
+    return meta;
+}
+
+NoteColor NoteWindow::get_color() const {
+    return current_color;
+}
+
 void NoteWindow::draw_title_bar() {
     fl_color(current_color.titlebar);
     fl_rectf(0, 0, w(), TITLE_BAR_HEIGHT);
@@ -31,6 +118,8 @@ NoteWindow::NoteWindow(int w, int h, const char* title)
         resizing(false),
         current_color(YELLOW) {
     
+    count++;
+    number = count;
     this->resizable(this);
     color(current_color.bg);
 
@@ -46,14 +135,42 @@ NoteWindow::NoteWindow(int w, int h, const char* title)
     textbox->box(FL_FLAT_BOX);
     textbox->color(current_color.bg);
     textbox->textcolor(FL_BLACK);
-
+    
     resizable(textbox.get());
 }
 
+void save_callback(Fl_Widget *widget, void *userdata) {
+    NoteWindow *window = static_cast<NoteWindow*>(userdata);
+    if (window) {
+        Fl_Text_Buffer *textbuf = window->get_textbuf();
+        std::string content = textbuf->text();
+        std::cout << "Saving...";
+        write_file(content, "../resources/note" + std::to_string(window->get_number()) + ".txt");
+        std::cout << "Successfully wrote " << content.length() << " characters to file." << std::endl;
+        NoteMeta notemeta = {
+            window->x(),
+            window->y(),
+            window->get_color()
+        };
+
+        notemeta.writeToFile("../resources/note" + std::to_string(window->get_number()) + ".meta");
+    }
+}
+
 NoteWindow::~NoteWindow() {
+    std::cout << "Exiting...";
+    count--;
     //if (changed) {
-        save_callback(nullptr, this);
+    save_callback(nullptr, this);
     //}
+}
+
+int NoteWindow::get_number() const{
+    return number;
+}
+
+int NoteWindow::get_count(){
+    return count;
 }
 
 void NoteWindow::draw() {
@@ -123,15 +240,7 @@ void NoteWindow::set_color(const NoteColor& c) {
     redraw();
 }
 
-void save_callback(Fl_Widget *widget, void *userdata) {
-    NoteWindow *window = static_cast<NoteWindow*>(userdata);
-    if (window) {
-        Fl_Text_Buffer *textbuf = window->get_textbuf();
-        std::string content = textbuf->text();
-        write_file(content);
-        std::cout << "Successfully wrote " << content.length() << " characters to file." << std::endl;
-    }
-}
+
 
 void color_callback(Fl_Widget *widget, void *userdata) {
     const NoteColor *color = static_cast<const NoteColor*>(userdata);
@@ -143,16 +252,18 @@ void color_callback(Fl_Widget *widget, void *userdata) {
 
 void new_note_callback(Fl_Widget *widget, void *userdata) {
     (void)widget; (void)userdata;
-    auto new_window = std::make_unique<NoteWindow>(300, 200, "New Note");
+    auto new_window = std::make_unique<NoteWindow>(300, 200, ("note" + std::to_string(NoteWindow::get_count())).c_str());
     new_window->border(0);
     new_window->end();
     new_window->show();
+
+    WindowManager::get_instance()->add_window(std::move(new_window));
 }
 
-std::string read_file() {
-    std::ifstream file(FILE_PATH);
+std::string read_file(const std::string& path) {
+    std::ifstream file(path);
     if (!file.is_open()) {
-        std::cerr << "Error: Unable to open file for reading: " << FILE_PATH << std::endl;
+        std::cerr << "Error: Unable to open file for reading: " << path << std::endl;
         return "";
     }
     
@@ -161,15 +272,4 @@ std::string read_file() {
     
     std::cout << "Successfully read " << content.length() << " characters from file." << std::endl;
     return content;
-}
-
-void write_file(const std::string& content) {
-    std::ofstream file(FILE_PATH);
-    if (!file.is_open()) {
-        std::cerr << "Error: Unable to open file for writing: " << FILE_PATH << std::endl;
-        return;
-    }
-    
-    file << content;
-    file.close();
 }

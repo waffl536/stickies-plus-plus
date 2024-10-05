@@ -10,16 +10,19 @@
 #include <FL/Fl_Text_Buffer.H>
 #include <iostream>
 #include <string>
+#include <filesystem>
 #include <fstream>
 #include <memory>
-
-const char FILE_PATH[] = "../resources/note.txt";
 
 struct NoteColor {
     Fl_Color titlebar;
     Fl_Color bg;
     Fl_Color buttonDarker;
     Fl_Color buttonLighter;
+
+    void serialize(std::ofstream& out) const;
+
+    void deserialize(std::ifstream& in);
 };
 
 const NoteColor YELLOW {
@@ -43,15 +46,35 @@ const NoteColor GREEN {
     fl_rgb_color(193, 255, 193)
 };
 
+struct NoteMeta{
+    int pos_y;
+    int pos_x;
+    NoteColor notecolor;
+
+    void serialize(std::ofstream& out) const;
+
+    void deserialize(std::ifstream& in);
+
+    void writeToFile(const std::string& filename) const;
+
+    static NoteMeta readFromFile(const std::string& filename);
+};
+
+struct NoteData{
+    std::string contents;
+    NoteMeta meta;
+};
+
 void save_callback(Fl_Widget *widget, void *userdata);
 void color_callback(Fl_Widget *widget, void *userdata);
-//void new_note_callback(Fl_Widget *widget, void *userdata);
-std::string read_file();
+void new_note_callback(Fl_Widget *widget, void *userdata);
+std::string read_file(const std::string& path);
 void write_file(const std::string& content);
+
 
 const Fl_Menu_Item menuitems[] = {
     { "&File",              0, 0, 0, FL_SUBMENU },
-        { "&New Note", FL_COMMAND + 'n', nullptr/*(Fl_Callback *)new_note_callback*/, nullptr },
+        { "&New Note", FL_COMMAND + 'n', (Fl_Callback *)new_note_callback, nullptr },
         { 0 },
     { "&Color", 0, 0, 0, FL_SUBMENU },
         { "&Yellow", 0, (Fl_Callback *)color_callback, (void*)&YELLOW },
@@ -67,6 +90,8 @@ private:
     static constexpr int CLOSE_BUTTON_SIZE = 12;
     static constexpr int PADDING = 10;
     static constexpr int RESIZE_HANDLE_SIZE = 16;
+    static int count;
+    int number;
     
     std::unique_ptr<Fl_Text_Editor> textbox;
     std::unique_ptr<Fl_Sys_Menu_Bar> menubar;
@@ -74,8 +99,10 @@ private:
     bool dragging;
     bool resizing;
     int drag_x, drag_y;
-    bool changed = false;
+    //bool changed = false;
     NoteColor current_color;
+
+
 
     void draw_title_bar();
 
@@ -90,14 +117,36 @@ public:
 
     ~NoteWindow();
 
+    static int get_count();
+
+    int get_number() const;
+
+    NoteColor get_color() const;
+
     void draw() override;
 
     int handle(int event) override;
 
     void resize(int X, int Y, int W, int H) override;
 
+    void hide() override;
+
     Fl_Text_Editor* get_textbox() const;
     Fl_Text_Buffer* get_textbuf() const;
 
     void set_color(const NoteColor& c);
+};
+
+class WindowManager{
+private:
+    std::vector<std::unique_ptr<NoteWindow>> win_vec;
+    static WindowManager* instance;
+
+    WindowManager ();
+public:
+    static WindowManager* get_instance();
+
+    void add_window(std::unique_ptr<NoteWindow> window);
+
+    void removeWindow(NoteWindow* window);
 };
